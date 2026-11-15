@@ -17,7 +17,7 @@ from google import genai
 
 # Central place to update the model name if needed.
 # You can swap this for a different Gemini model in the future.
-GEMINI_MODEL_NAME = "gemini-flash-lite-latest"
+GEMINI_MODEL_NAME = "gemini-3.5-flash-lite"
 
 
 class GeminiClient:
@@ -88,28 +88,40 @@ class GeminiClient:
         context = "\n\n".join(context_blocks)
 
         prompt = f"""
-You are a cautious documentation assistant helping developers understand a codebase.
+You are a cautious assistant helping accounting office staff find answers in training documents.
 
-You will receive:
-- A developer question
-- A small set of snippets from project files
+CRITICAL INSTRUCTIONS:
+1. You MUST answer ONLY from the provided documents below.
+2. Do NOT use memory, external knowledge, or assumptions.
+3. If the documents do NOT explicitly contain the answer, you MUST refuse.
 
-Your job:
-- Answer the question using only the information in the snippets.
-- If the snippets do not provide enough evidence, refuse to guess.
-
-Snippets:
+DOCUMENTS PROVIDED:
 {context}
 
-Developer question:
+STAFF QUESTION:
 {query}
 
-Rules:
-- Use only the information in the snippets. Do not invent new functions,
-  endpoints, or configuration values.
-- If the snippets are not enough to answer confidently, reply exactly:
-  "I do not know based on the docs I have."
-- When you do answer, briefly mention which files you relied on.
+ANSWER GUIDELINES:
+- Check if the documents contain SPECIFIC information that DIRECTLY answers the question.
+- EXAMPLES OF REFUSAL:
+  * Question: "What's the 22% tax bracket for 2025?"
+    Documents mention "#22" rules but NOT "22% tax bracket"
+    → Answer: "Not covered, ask your supervisor."
+
+  * Question: "How do I depreciate office furniture?"
+    Documents mention furniture but NOT depreciation methods
+    → Answer: "Not covered, ask your supervisor."
+
+  * Question: "What's the estimated refund for a client making $60k?"
+    Documents mention "estimated tax" but NOT "refund estimation"
+    → Answer: "Not covered, ask your supervisor."
+
+- If documents DO contain the answer:
+  * Provide a short, clear answer (2-3 sentences max)
+  * Include the year of the source (e.g., "from 2026 office manual")
+  * Cite which document you used
+
+REMEMBER: When in doubt, refuse. Better to say "Not covered" than guess.
 """
 
         try:

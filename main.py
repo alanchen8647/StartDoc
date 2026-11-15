@@ -13,6 +13,8 @@ load_dotenv()
 from docubot import DocuBot
 from llm_client import GeminiClient
 from dataset import SAMPLE_QUERIES
+from guardrail import check_input_safety, get_safe_response, log_guardrail_block
+from logger import get_logger
 
 
 def try_create_llm_client():
@@ -95,14 +97,44 @@ def run_retrieval_only_mode(bot):
     """
     Mode 2:
     Retrieval only answers. No LLM involved.
+
+    SAFETY: Check input guardrail first (SSN/EIN/names)
+    LOGGING: Log all queries and results for later analysis
     """
+    logger = get_logger()
     queries, label = get_query_or_use_samples()
     print(f"\nRunning retrieval only mode on {label}...\n")
 
     for query in queries:
         print("=" * 60)
         print(f"Question: {query}\n")
+
+        # CHECK INPUT SAFETY FIRST
+        is_safe, reason = check_input_safety(query)
+        if not is_safe:
+            # Input contains sensitive data - refuse and log
+            logger.log_guardrail_block(reason, query)
+            response = get_safe_response(reason)
+            print(response)
+            print()
+            continue
+
+        # Input is safe - proceed with retrieval
         answer = bot.answer_retrieval_only(query)
+
+        # Log if retrieval returned results or refused
+        if "I do not know" in answer or "not covered" in answer.lower():
+            logger.log_retrieval_miss(query, "score below threshold")
+        else:
+            # Extract filename from answer for logging
+            try:
+                # Answer format: "File: filename (year)\ntext..."
+                if "File:" in answer:
+                    filename = answer.split("File: ")[1].split("\n")[0]
+                    logger.log_retrieval_hit(query, filename, 0.0)  # Score tracked internally
+            except:
+                pass
+
         print("Retrieved snippets:")
         print(answer)
         print()
@@ -112,18 +144,38 @@ def run_rag_mode(bot, has_llm):
     """
     Mode 3:
     Retrieval plus LLM generation.
+
+    SAFETY: Check input guardrail first (SSN/EIN/names)
+    LOGGING: Log all queries and LLM answers for later analysis
     """
     if not has_llm or bot.llm_client is None:
         print("\nRAG mode is not available (no GEMINI_API_KEY).\n")
         return
 
+    logger = get_logger()
     queries, label = get_query_or_use_samples()
     print(f"\nRunning RAG mode on {label}...\n")
 
     for query in queries:
         print("=" * 60)
         print(f"Question: {query}\n")
+
+        # CHECK INPUT SAFETY FIRST
+        is_safe, reason = check_input_safety(query)
+        if not is_safe:
+            # Input contains sensitive data - refuse and log
+            logger.log_guardrail_block(reason, query)
+            response = get_safe_response(reason)
+            print(response)
+            print()
+            continue
+
+        # Input is safe - proceed with RAG
         answer = bot.answer_rag(query)
+
+        # Log the answer (with source from retrieval)
+        logger.log_answer(query, answer, "retrieval + LLM", mode="rag")
+
         print("Answer:")
         print(answer)
         print()
