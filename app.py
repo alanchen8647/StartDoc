@@ -425,7 +425,8 @@ if send_button and user_input:
                     answer = bot.answer_retrieval_only(user_input)
 
                     # Log based on whether we got results
-                    if "I do not know" not in answer and "not covered" not in answer.lower():
+                    # Only check for "I do not know" - document content may legitimately contain "not covered"
+                    if "I do not know" not in answer:
                         logger.log_retrieval_hit(user_input, "retrieved", 0.0)
                     else:
                         logger.log_retrieval_miss(user_input, "score below threshold")
