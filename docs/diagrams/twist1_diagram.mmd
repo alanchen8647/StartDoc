@@ -1,0 +1,23 @@
+flowchart TD
+  A(["PT types a question<br/>on the Streamlit page"]) --> B{"Has a name,<br/>SSN or EIN?"}
+  B -- Yes --> B1["Show a warning and stop"]
+  B -- No --> C["Search the 16 office documents<br/>in docs_pt/"]
+  C --> D{"Found good<br/>matching passages?"}
+  D -- No --> D1["Say: Not covered,<br/>ask your supervisor"]
+  D -- Yes --> E["AI writes the answer<br/>using only those passages"]
+  E --> G["Show answer,<br/>sources and year"]
+  G --> H(["PT reads the output<br/>and judges it"])
+  K[["evaluation.py runs<br/>the 39 test questions"]] -.-> C
+
+  N1["Next: quote check"] -.-> E
+  N2["Next: save to log<br/>and helpful button"] -.-> H
+
+  classDef keep fill:#e3f2fd,stroke:#1565c0,color:#000
+  classDef change fill:#fff9c4,stroke:#f9a825,color:#000
+  classDef new fill:#c8e6c9,stroke:#2e7d32,color:#000
+  classDef later fill:#f5f5f5,stroke:#9e9e9e,color:#757575,stroke-dasharray:4 3
+  class E keep
+  class A,C,D1,G,K change
+  class B,B1 new
+  class D,H keep
+  class N1,N2 later

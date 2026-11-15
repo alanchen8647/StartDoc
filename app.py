@@ -98,7 +98,7 @@ if "llm_available" not in st.session_state:
 
 if "bot" not in st.session_state:
     bot = DocuBot(
-        docs_folder="docs_pt",
+        docs_folder="knowledge_base",
         llm_client=st.session_state.llm_client
     )
     st.session_state.bot = bot
@@ -140,7 +140,7 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("## 📚 Knowledge Base")
 
-    docs_folder = Path("docs_pt")
+    docs_folder = Path("knowledge_base")
 
     if docs_folder.exists():
         doc_files = sorted(list(docs_folder.glob("*.md")) + list(docs_folder.glob("*.txt")))
@@ -174,9 +174,9 @@ with st.sidebar:
                 file_size = file_path.stat().st_size
                 st.caption(f"📊 Size: {file_size/1024:.1f} KB")
         else:
-            st.info("No documents found in docs_pt/")
+            st.info("No documents found in knowledge_base/")
     else:
-        st.warning("docs_pt/ folder not found")
+        st.warning("knowledge_base/ folder not found")
 
 # ============================================================================
 # SIDEBAR: LOG VIEWER

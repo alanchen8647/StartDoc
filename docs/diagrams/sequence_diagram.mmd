@@ -1,0 +1,52 @@
+sequenceDiagram
+  autonumber
+  actor PT
+  participant CLI as main.py
+  participant G as Input Guardrail
+  participant R as Retriever
+  participant A as Answer Generator
+  participant M as Gemini API (external)
+  participant V as Answer Verifier
+  participant L as Logger
+
+  PT->>CLI: type question
+  CLI->>G: check(question)
+  alt SSN, EIN or name found
+    G-->>CLI: blocked
+    CLI-->>PT: Remove names and ID numbers
+  else allowed
+    CLI->>R: retrieve(question)
+    alt best score below threshold
+      R-->>CLI: no result
+      CLI-->>PT: Not covered, ask your supervisor
+    else evidence found
+      R-->>CLI: passages + sources + year
+      CLI->>A: answer(question, passages)
+      A->>M: prompt
+      M-->>A: draft answer
+      A-->>CLI: draft
+      CLI->>V: verify(quotes, passages)
+      alt quotes not found
+        V-->>CLI: failed
+        CLI->>A: retry once
+        A-->>CLI: new draft
+        CLI->>V: verify again
+        alt still failed
+          V-->>CLI: failed
+          CLI-->>PT: show source passages only
+        else verified
+          V-->>CLI: ok
+          CLI-->>PT: answer + sources + year
+        end
+      else verified
+        V-->>CLI: ok
+        CLI-->>PT: answer + sources + year
+      end
+      Note over PT: H2 PT checks the quotes against the sources
+    end
+  end
+  CLI->>L: log(question, passages, outcome)
+  opt PT gives feedback
+    PT->>CLI: y or n
+    CLI->>L: log(feedback)
+  end

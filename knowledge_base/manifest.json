@@ -1,0 +1,189 @@
+{
+  "documents": [
+    {
+      "doc": "office_manual_2026.md",
+      "title": "Office Manual 2026",
+      "year": 2026,
+      "tier": 1,
+      "audience": "PT",
+      "language": "en",
+      "type": "rule",
+      "source_file": "2026 office manual.docx",
+      "sections": 81
+    },
+    {
+      "doc": "preparer_manual_2025.md",
+      "title": "Tax Season Preparer Manual",
+      "year": 2025,
+      "tier": 1,
+      "audience": "PT",
+      "language": "en",
+      "type": "rule",
+      "source_file": "Tax  Season Preparer Manual.docx",
+      "sections": 10
+    },
+    {
+      "doc": "fee_cover_page_2026.md",
+      "title": "2026 Service Fee Cover Page",
+      "year": 2026,
+      "tier": 1,
+      "audience": "PT",
+      "language": "en",
+      "type": "fee",
+      "source_file": "2026 service fee cover page (transcribed).md",
+      "sections": 12
+    },
+    {
+      "doc": "walk_in_steps_2026.md",
+      "title": "Steps and Conversations: Walk-in Clients",
+      "year": 2026,
+      "tier": 2,
+      "audience": "PT",
+      "language": "en",
+      "type": "workflow",
+      "source_file": "Walk client handle steps.docx",
+      "sections": 10
+    },
+    {
+      "doc": "document_list_2026.md",
+      "title": "Useful Documents in the 2026 Folder",
+      "year": 2026,
+      "tier": 2,
+      "audience": "PT",
+      "language": "en",
+      "type": "navigation",
+      "source_file": "document list.docx",
+      "sections": 1
+    },
+    {
+      "doc": "minimum_fee_letter_2025.md",
+      "title": "Minimum Fee Letter (income over $200K)",
+      "year": 2025,
+      "tier": 2,
+      "audience": "PT",
+      "language": "en+zh",
+      "type": "fee",
+      "source_file": "Minimum Fee Letter for over 200K.docx",
+      "sections": 2
+    },
+    {
+      "doc": "irs_standard_deduction_2025.md",
+      "title": "IRS Standard Deduction 2025",
+      "year": 2025,
+      "tier": 3,
+      "audience": "PT",
+      "language": "en",
+      "type": "reference",
+      "source_file": "IRS standard deduction 2025 (official source).md",
+      "sections": 3
+    },
+    {
+      "doc": "ira_limits_2025.md",
+      "title": "IRA Income Limits 2025",
+      "year": 2025,
+      "tier": 3,
+      "audience": "PT",
+      "language": "en",
+      "type": "reference",
+      "source_file": "IRA income limits 2025 (transcribed).md",
+      "sections": 3
+    },
+    {
+      "doc": "essential_plan_2025.md",
+      "title": "Essential Plan Eligibility 2025",
+      "year": 2025,
+      "tier": 3,
+      "audience": "PT",
+      "language": "en",
+      "type": "reference",
+      "source_file": "Essential Plan eligibility 2025 (transcribed).md",
+      "sections": 0
+    },
+    {
+      "doc": "routing_school_codes_2024.md",
+      "title": "NYS Bank Routing Numbers and School District Codes",
+      "year": 2024,
+      "tier": 3,
+      "audience": "PT",
+      "language": "en",
+      "type": "reference",
+      "source_file": "NYS bank routing numbers and school district codes (transcribed).md",
+      "sections": 2
+    },
+    {
+      "doc": "medicaid_aca_2026.md",
+      "title": "Medicaid and ACA Income Levels (Coverage Year 2026)",
+      "year": 2026,
+      "tier": 3,
+      "audience": "PT",
+      "language": "en",
+      "type": "reference",
+      "source_file": "Medicaid & Obama Care Income Level 2026.pdf",
+      "sections": 8
+    },
+    {
+      "doc": "it214_rent_ack_2023.md",
+      "title": "New York IT-214 Rent Acknowledgment",
+      "year": 2023,
+      "tier": 3,
+      "audience": "PT",
+      "language": "en+zh",
+      "type": "reference",
+      "source_file": "New York IT214 ack.docx",
+      "sections": 0
+    },
+    {
+      "doc": "property_tax_lookup_2023.md",
+      "title": "Property Tax Credit Lookup",
+      "year": 2023,
+      "tier": 3,
+      "audience": "PT",
+      "language": "en",
+      "type": "reference",
+      "source_file": "Property Tax Credit Lookup.docx",
+      "sections": 2
+    },
+    {
+      "doc": "audit_protection_2026.md",
+      "title": "Why Our Service Is Not 100% Audit Protected",
+      "year": 2026,
+      "tier": 3,
+      "audience": "PT",
+      "language": "en",
+      "type": "policy",
+      "source_file": "Our service is not 100_ audit protected.docx",
+      "sections": 0
+    },
+    {
+      "doc": "script_personal_return_2026.md",
+      "title": "Conversation Script: Personal Tax Return Call",
+      "year": 2026,
+      "tier": 4,
+      "audience": "PT",
+      "language": "en",
+      "type": "script",
+      "source_file": "Personal Tax Return Conversation.docx",
+      "sections": 1
+    },
+    {
+      "doc": "script_technical_question_2026.md",
+      "title": "Conversation Script: Technical Questions",
+      "year": 2026,
+      "tier": 4,
+      "audience": "PT",
+      "language": "en",
+      "type": "script",
+      "source_file": "Technical Question Conversation.docx",
+      "sections": 1
+    }
+  ],
+  "excluded": {
+    "Supervisoer additonal trainning.docx": "supervisor-only training (PTs must not see it)",
+    "Drawing conversation.docx": "marketing prize-drawing script, not a PT question",
+    "Quick Reference Guide.pdf": "2021 Drake keyboard shortcuts, possible later feature",
+    "NYC care 2025.pdf": "Chinese two-column PDF; text extracts out of order. Needs a manual translation first",
+    "NYS bank routing number & school district.pdf": "replaced by transcribed .md",
+    "IRA income limits 2025.docx": "replaced by transcribed .md (tables were images)",
+    "Essential Plan for 2025.png": "replaced by transcribed .md"
+  }
+}

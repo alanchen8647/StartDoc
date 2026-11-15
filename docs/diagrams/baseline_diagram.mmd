@@ -1,0 +1,17 @@
+flowchart TD
+  A(["User picks a mode and<br/>types a question<br/>in the terminal"]) --> C["Search the 4 sample docs<br/>in docs/"]
+  C --> D{"Found good<br/>matching passages?"}
+  D -- No --> D1["Say: I do not know"]
+  D -- Yes --> M{"Which mode?"}
+  M -- "Retrieval only" --> G1["Print the passages"]
+  M -- "RAG" --> E["AI writes the answer<br/>using only those passages"]
+  E --> G2["Print the answer"]
+  D1 --> H(["User reads the output<br/>and judges it"])
+  G1 --> H
+  G2 --> H
+  K[["evaluation.py checks<br/>the retrieval hit rate"]] -.-> C
+
+  classDef human fill:#fff3e0,stroke:#e65100,color:#000
+  classDef test fill:#e8f5e9,stroke:#2e7d32,color:#000
+  class H human
+  class K test

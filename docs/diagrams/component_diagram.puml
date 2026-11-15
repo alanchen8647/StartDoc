@@ -1,0 +1,59 @@
+@startuml
+title PT FAQ Helper - Component Diagram (MVP, runs locally)
+left to right direction
+
+actor "PT" as pt
+actor "Office owner" as owner
+actor "Supervisor" as sup
+
+package "Offline preparation" {
+  artifact "Source files\n(.docx / .pdf / .md)" as src
+  component "Document Preparer\nprepare_docs.py" as prep
+  database "Knowledge Base\ndocs_pt/ + manifest.json" as kb
+}
+
+package "Runtime (one question)" {
+  component "Command-line app\nmain.py" as cli
+  component "Input Guardrail" as guard
+  component "Retriever + Confidence Check\ndocubot.py" as ret
+  component "Answer Generator\nllm_client.py" as gen
+  component "Answer Verifier" as ver
+  component "Logger" as logger
+}
+
+database "Log file" as logfile
+cloud "Gemini API" <<external>> as gem
+
+package "Evaluation" {
+  artifact "Test Set\n(39 questions)" as tests
+  component "Evaluator\nevaluation.py" as evaluator
+}
+
+' --- offline flow ---
+src --> prep : A1 read
+prep --> kb : A2 write
+kb --> ret : A3 load at start
+
+' --- runtime flow ---
+pt --> cli : 1 question
+cli --> guard : 2 check
+guard --> ret : 3 allowed question
+ret --> gen : 4 question + passages
+gen --> gem : 5 prompt
+gen --> ver : 6 draft + quotes
+ver --> cli : 7 answer + sources + year
+cli --> pt : 8 shown in terminal
+cli ..> logger : 9 log
+logger --> logfile
+
+' --- humans ---
+owner ..> prep : H1 review rules
+pt ..> cli : H2 check quotes\nH4 feedback y/n
+cli ..> sup : H3 not covered:\nask supervisor
+owner ..> logfile : H4 review feedback
+
+' --- testing ---
+tests --> evaluator
+evaluator ..> cli : T2 run test questions
+evaluator ..> owner : report
+@enduml

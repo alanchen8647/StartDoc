@@ -1,0 +1,54 @@
+flowchart TD
+  subgraph LEG["LEGEND"]
+    K1["Already in the starter"]:::keep
+    K2["In the starter, needs changes"]:::change
+    K3["New"]:::new
+  end
+  subgraph IN["INPUT"]
+    U(["Human: PT types a question<br/>on the Streamlit page<br/>app.py"]):::change
+    GU{"Has a name,<br/>SSN or EIN?"}:::new
+    P["prepare_docs.py<br/>Word and PDF to clean text"]:::new
+    D[("docs_pt/ folder<br/>16 cleaned documents")]:::change
+  end
+  subgraph PROC["PROCESS"]
+    L["Load, split and index<br/>split by numbered rule,<br/>keep file name and year<br/>DocuBot"]:::change
+    R["Retriever<br/>word stems and synonyms<br/>DocuBot.retrieve"]:::change
+    T{"Best score above<br/>the retuned threshold?"}:::change
+    G["Generator<br/>Gemini answers in our format<br/>llm_client.py"]:::change
+    V{"Do the quotes match<br/>the documents?"}:::new
+  end
+  subgraph OUT["OUTPUT"]
+    O1["Show answer,<br/>sources and year"]:::change
+    O2["Show: Not covered,<br/>ask your supervisor"]:::change
+    O3["Show the original<br/>passages only"]:::keep
+    O4["Show a warning and stop"]:::new
+    LOG[("Save to log")]:::new
+  end
+  subgraph CHECK["CHECKING"]
+    H(["Human: PT checks the quotes<br/>and clicks helpful or not"]):::change
+    OWN(["Human: owner reviews<br/>the log and feedback"]):::new
+    E[["Test: evaluation.py<br/>39 test questions"]]:::change
+  end
+
+  U --> GU
+  GU -- "Yes" --> O4
+  GU -- "No" --> R
+  P --> D --> L --> R
+  R --> T
+  T -- "No" --> O2
+  T -- "Yes" --> G --> V
+  V -- "No" --> O3
+  V -- "Yes" --> O1
+  O1 --> H
+  O1 & O2 & O3 & O4 --> LOG
+  LOG -.-> OWN
+  E -.-> GU
+
+  classDef keep fill:#e3f2fd,stroke:#1565c0,color:#000
+  classDef change fill:#fff9c4,stroke:#f9a825,color:#000
+  classDef new fill:#c8e6c9,stroke:#2e7d32,color:#000
+  style LEG fill:#fafafa,stroke:#bdbdbd
+  style IN fill:#fafafa,stroke:#bdbdbd
+  style PROC fill:#fafafa,stroke:#bdbdbd
+  style OUT fill:#fafafa,stroke:#bdbdbd
+  style CHECK fill:#fafafa,stroke:#bdbdbd
