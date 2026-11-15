@@ -34,19 +34,68 @@ STOPWORDS = {
 # Guardrails (Step 3) handle SSN/EIN/names, so retrieval can focus on content accuracy.
 MIN_RELEVANCE_SCORE = 3.0
 
-# Small synonym table for common accounting office terms
+# Extended synonym table for common accounting office terms
+# Maps keywords to their semantic equivalents for better retrieval
 SYNONYMS = {
-    "fee": {"charge", "cost", "price", "service charge"},
+    # Fee-related
+    "fee": {"charge", "cost", "price", "service charge", "amount"},
     "charge": {"fee", "cost", "price"},
+    "price": {"fee", "charge", "cost"},
+    "cost": {"fee", "charge", "price"},
+
+    # Deduction-related
+    "deduction": {"discount", "write-off", "reduction", "standard"},
     "discount": {"deduction", "reduction"},
-    "deduction": {"discount", "write-off"},
-    "payment": {"pay", "remit"},
-    "return": {"form", "filing"},
-    "standard": {"standard"},
-    "deduction": {"standard deduction"},
-    "estimate": {"calculation", "quote"},
-    "eic": {"earned income credit", "eitc"},
-    "credit": {"eic", "eitc", "tax credit"},
+    "write-off": {"deduction"},
+    "reduction": {"deduction", "discount"},
+
+    # Standard deduction (key improvement)
+    "standard": {"standard deduction", "base deduction"},
+    "amount": {"fee", "sum", "total"},
+
+    # Filing/Return-related
+    "return": {"form", "filing", "file"},
+    "filing": {"return", "file", "form"},
+    "file": {"filing", "return", "form"},
+    "form": {"return", "filing", "1040"},
+
+    # Marital status (crucial for queries)
+    "married": {"joint", "jointly", "mfj"},
+    "joint": {"married", "jointly", "mfj"},
+    "jointly": {"married", "joint", "mfj"},
+    "single": {"unmarried", "individual"},
+
+    # Dependent-related
+    "dependent": {"dependent", "family", "child", "spouse"},
+    "family": {"dependent", "household", "spouse"},
+    "household": {"family", "dependent"},
+
+    # Tax-related
+    "tax": {"income tax", "federal tax"},
+    "income": {"earnings", "salary", "wage"},
+    "estimate": {"calculation", "quote", "estimated"},
+    "bracket": {"rate", "percentage"},
+
+    # Credit-related
+    "credit": {"eic", "eitc", "tax credit", "earned income"},
+    "eic": {"earned income credit", "eitc", "credit"},
+    "eitc": {"eic", "earned income credit", "credit"},
+
+    # IRA/Retirement
+    "ira": {"retirement", "retirement account", "401k"},
+    "retirement": {"ira", "pension", "401k"},
+    "limit": {"limit", "maximum", "cap"},
+    "maximum": {"limit", "cap"},
+
+    # Payment/Filing status
+    "payment": {"pay", "remit", "send"},
+    "deadline": {"due date", "due", "date"},
+    "threshold": {"limit", "minimum", "requirement"},
+
+    # Accounting concepts
+    "income": {"earnings", "compensation", "salary", "wages"},
+    "salary": {"income", "wages", "compensation"},
+    "wage": {"income", "salary", "earnings"},
 }
 
 # Stemmer for handling plurals/singulars
@@ -55,6 +104,31 @@ _STEMMER = PorterStemmer()
 def stem_word(word):
     """Apply Porter stemming to normalize word forms."""
     return _STEMMER.stem(word)
+
+def normalize_query(query: str) -> str:
+    """
+    Normalize common question patterns to improve retrieval.
+
+    Handles:
+    - "What's/What is" → remove
+    - "for/to" before filing status → extract key terms
+    - Remove redundant context words ("family", "with no dependent")
+    - Keep only high-value terms for retrieval
+    """
+    import re
+
+    # Remove common question starters
+    normalized = re.sub(r"^(what|tell me|can you|how|is there)", "", query, flags=re.IGNORECASE)
+    normalized = re.sub(r"^('s|is|are|the)\s+", "", normalized, flags=re.IGNORECASE)
+
+    # Remove "for" and "with" noise when followed by context words
+    # "for Married Filing Joint family with no dependent" → extract "married filing"
+    normalized = re.sub(r"\s+(family|with no dependent|without dependents|who is|that is)\b.*$", "", normalized, flags=re.IGNORECASE)
+    normalized = re.sub(r"\s+for\s+(?=married|single|head)", " ", normalized, flags=re.IGNORECASE)
+
+    # Clean up extra spaces and lowercase
+    normalized = " ".join(normalized.split()).strip()
+    return normalized if normalized else query
 
 def expand_with_synonyms(word):
     """Expand a word with its synonyms from the table."""
@@ -410,19 +484,70 @@ class DocuBot:
 
         return score
 
+    def _identify_category(self, query: str):
+        """
+        Hierarchical retrieval: identify if query matches a known category.
+        Returns (category_name, target_file) or (None, None)
+        """
+        query_lower = query.lower()
+
+        # Define category keywords and their target documents
+        categories = {
+            "standard_deduction": {
+                "keywords": ["standard deduction", "standard deduction for"],
+                "file": "irs_standard_deduction_2025.md",
+            },
+            "ira": {
+                "keywords": ["ira", "ira contribution", "ira limit", "ira deduction"],
+                "file": "ira_limits_2025.md",
+            },
+            "fees": {
+                "keywords": ["fee", "fees", "filing fee", "service fee"],
+                "file": "fee_cover_page_2026.md",
+            },
+        }
+
+        # Check for category match (longer keywords first)
+        for category, info in categories.items():
+            for keyword in sorted(info["keywords"], key=len, reverse=True):
+                if keyword in query_lower:
+                    return category, info["file"]
+
+        return None, None
+
     def retrieve(self, query, top_k=3):
         """
-        Selects the top_k most relevant chunks (sections of a document,
-        not whole files).
+        Hierarchical Retrieval: Two-level search strategy
 
-        Uses the index to narrow candidates down to chunks that contain
-        at least one query word (stemmed/synonymized), scores each with
-        score_document, and returns (filename, chunk_text) sorted by
-        score descending.
+        Level 1: Check if query matches a known category (e.g., "standard deduction")
+        Level 2: If category matched, load that document directly
+        Otherwise: Use standard TF-IDF retrieval
 
-        Refuses (returns []) if even the best-scoring chunk falls below
-        MIN_RELEVANCE_SCORE - see that constant for why.
+        Returns list of (filename, text, metadata) tuples sorted by relevance.
+        Refuses (returns []) if no match is strong enough.
         """
+        # Normalize query to improve retrieval (remove noise words, standardize phrasing)
+        query = normalize_query(query)
+
+        # LEVEL 1: Try category-first retrieval for known categories
+        category, target_file = self._identify_category(query)
+
+        if category and target_file:
+            # Try to load the target document directly
+            target_path = os.path.join(self.docs_folder, target_file)
+            if os.path.exists(target_path):
+                try:
+                    with open(target_path, 'r', encoding='utf-8') as f:
+                        full_text = f.read()
+
+                    # Return the document directly
+                    meta = {"year": 2025 if "2025" in target_file else 2026, "type": category}
+                    return [(target_file, full_text, meta)]
+                except Exception:
+                    # Fall back to standard retrieval if file read fails
+                    pass
+
+        # LEVEL 2: Standard retrieval (fallback)
         # Process query: lowercase, strip punctuation, stem
         query_words = {w.strip(string.punctuation) for w in query.lower().split()}
         query_words -= STOPWORDS
