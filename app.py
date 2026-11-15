@@ -30,12 +30,30 @@ st.set_page_config(
     page_title="DocuBot - FAQ Helper",
     page_icon="💬",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="expanded",
+    menu_items={
+        'Get Help': 'https://streamlit.io',
+        'Report a bug': None,
+        'About': "DocuBot FAQ Helper v1.0"
+    }
 )
 
-# Custom CSS for better styling
+# Force dark theme for better visibility
+import os
+os.environ['STREAMLIT_CLIENT_THEME'] = 'dark'
+
+# Custom CSS for better visibility and dark theme
 st.markdown("""
 <style>
+    * {
+        color: #ffffff;
+    }
+
+    body, .stApp {
+        background-color: #1a1a1a;
+        color: #ffffff;
+    }
+
     .chat-message {
         padding: 12px;
         margin: 8px 0;
@@ -44,38 +62,64 @@ st.markdown("""
         line-height: 1.4;
     }
     .user-message {
-        background-color: #e3f2fd;
-        border-left: 4px solid #2196f3;
+        background-color: #1e3a8a;
+        border-left: 4px solid #3b82f6;
         margin-left: 20px;
+        color: #ffffff;
     }
     .assistant-message {
-        background-color: #f5f5f5;
-        border-left: 4px solid #666;
+        background-color: #374151;
+        border-left: 4px solid #9ca3af;
+        color: #ffffff;
     }
     .refused-message {
-        background-color: #fff3cd;
-        border-left: 4px solid #ffc107;
+        background-color: #78350f;
+        border-left: 4px solid #f59e0b;
+        color: #ffffff;
     }
     .log-entry {
         font-size: 12px;
         padding: 8px;
         margin: 4px 0;
         border-radius: 4px;
-        background-color: #f9f9f9;
-        border-left: 3px solid #ddd;
+        background-color: #2d2d2d;
+        border-left: 3px solid #555;
         font-family: monospace;
+        color: #e0e0e0;
     }
     .log-guardrail {
-        border-left-color: #f44336;
-        background-color: #ffebee;
+        border-left-color: #ef4444;
+        background-color: #3a1f1f;
     }
     .log-retrieval {
-        border-left-color: #4caf50;
-        background-color: #f1f8e9;
+        border-left-color: #22c55e;
+        background-color: #1f3a1f;
     }
     .log-answer {
-        border-left-color: #2196f3;
-        background-color: #e3f2fd;
+        border-left-color: #3b82f6;
+        background-color: #1e3a8a;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+        color: #ffffff !important;
+    }
+
+    p, span, div, label {
+        color: #ffffff !important;
+    }
+
+    input, textarea, select {
+        background-color: #374151 !important;
+        color: #ffffff !important;
+        border: 1px solid #555 !important;
+    }
+
+    [data-testid="stTextInput"] {
+        background-color: #374151;
+    }
+
+    [data-testid="stMarkdownContainer"] {
+        color: #ffffff;
     }
 </style>
 """, unsafe_allow_html=True)
