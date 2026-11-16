@@ -88,7 +88,7 @@ Key Information:
 ** Age 50 and older: $29,500 (includes $7,500 catch-up contribution)
 Source: ira_limits_2025.md and 401k_limits_2025.md (2025)
 ``` 
-
+System also log recoard of retriveal and guarddrail blocks in `guardrail_blocks.jsonl` and `retrieval_results.jsonl`
 
 ## Design Decisions
 
