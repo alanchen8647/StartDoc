@@ -7,7 +7,13 @@ to ensure it can handle natural language variations while returning correct answ
 
 import pytest
 import os
-from final_hierarchical_retrieval import category_first_retrieve
+from docubot import DocuBot
+
+_bot = DocuBot(docs_folder='knowledge_base')
+
+
+def category_first_retrieve(query, top_k=3):
+    return _bot.retrieve(query, top_k=top_k)
 
 
 class TestStandardDeductionCategory:

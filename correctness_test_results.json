@@ -1,0 +1,74 @@
+[
+  {
+    "passed": true,
+    "query": "What are the IRA contribution limits for 2025?",
+    "category": "ira_contribution_limits",
+    "kb_has_answer": true,
+    "expected_behavior": "RETURN_ANSWER",
+    "system_behavior": "RETURNED_ANSWER",
+    "compliance_issues": [],
+    "answer_preview": "[ira_limits_2025.md (2025)]\n# IRA contribution and deduction limits 2025\nSource: \"IRA income limits 2025.docx\" (three table images, transcribed to tex...",
+    "answer_length": 3428,
+    "note": ""
+  },
+  {
+    "passed": true,
+    "query": "What is the standard deduction for Married filing joint?",
+    "category": "standard_deduction",
+    "kb_has_answer": true,
+    "expected_behavior": "RETURN_ANSWER",
+    "system_behavior": "RETURNED_ANSWER",
+    "compliance_issues": [],
+    "answer_preview": "[irs_standard_deduction_2025.md (2025)]\n# Standard deduction amounts, tax year 2025 (official IRS source)\nSource: IRS VITA/TCE training content, \"Stan...",
+    "answer_length": 1117,
+    "note": ""
+  },
+  {
+    "passed": true,
+    "query": "What's the fee for filing taxes?",
+    "category": "filing_fee",
+    "kb_has_answer": true,
+    "expected_behavior": "RETURN_ANSWER",
+    "system_behavior": "RETURNED_ANSWER",
+    "compliance_issues": [],
+    "answer_preview": "[fee_cover_page_2026.md (2026)]\n# W.C. Tax and Consulting Service Inc. - 2026 Cover Page (service fee sheet)\nSource: \"2026 cover page 2.pdf\" (2 pages,...",
+    "answer_length": 4478,
+    "note": ""
+  },
+  {
+    "passed": true,
+    "query": "What is the IRA deduction limit?",
+    "category": "ira_deduction",
+    "kb_has_answer": true,
+    "expected_behavior": "RETURN_ANSWER",
+    "system_behavior": "RETURNED_ANSWER",
+    "compliance_issues": [],
+    "answer_preview": "[ira_limits_2025.md (2025)]\n# IRA contribution and deduction limits 2025\nSource: \"IRA income limits 2025.docx\" (three table images, transcribed to tex...",
+    "answer_length": 3428,
+    "note": ""
+  },
+  {
+    "passed": true,
+    "query": "What's the maximum I can contribute to my 401k for retirement?",
+    "category": "401k_contribution_limits",
+    "kb_has_answer": true,
+    "expected_behavior": "RETURN_ANSWER",
+    "system_behavior": "RETURNED_ANSWER",
+    "compliance_issues": [],
+    "answer_preview": "[401k_limits_2025.md (2025)]\n# 401(k) Contribution Limits 2025\n\nSource: IRS Publication 560 and 401(k) Plan Rules. Tax year 2025. Federal limits only....",
+    "answer_length": 7152,
+    "note": ""
+  },
+  {
+    "passed": true,
+    "query": "How do I maximize my tax refund?",
+    "category": "tax_strategy",
+    "kb_has_answer": false,
+    "expected_behavior": "REFUSE",
+    "system_behavior": "RETURNED_ANSWER",
+    "compliance_issues": [],
+    "answer_preview": "[401k_limits_2025.md]\n## How to Maximize 401(k) Contributions\n\n---\n[office_manual_2026.md (2026)]\n### Customer Service #1\nFor remote clients, do it on...",
+    "answer_length": 406,
+    "note": "This is an advisory question - KB should not have this"
+  }
+]
