@@ -1,0 +1,62 @@
+[
+  {
+    "query": "What are the IRA contribution limits for 2025?",
+    "category": "ira_contribution_limits",
+    "query_intent": "Specific dollar amounts for IRA contributions",
+    "expected_answer": "$7,000 (age <50), $8,000 (age 50+)",
+    "document": "knowledge_base/ira_limits_2025.md",
+    "document_exists": true,
+    "exact_answer_exists": true,
+    "status": "SHOULD_ANSWER",
+    "findings": "All required phrases found",
+    "recommendation": "\u2705 System MUST return answer with exact information"
+  },
+  {
+    "query": "What is the standard deduction for Married filing joint?",
+    "category": "standard_deduction",
+    "query_intent": "Specific dollar amount for MFJ standard deduction",
+    "expected_answer": "$31,500",
+    "document": "knowledge_base/irs_standard_deduction_2025.md",
+    "document_exists": true,
+    "exact_answer_exists": true,
+    "status": "SHOULD_ANSWER",
+    "findings": "All required phrases found",
+    "recommendation": "\u2705 System MUST return answer with exact information"
+  },
+  {
+    "query": "What's the fee for filing taxes?",
+    "category": "filing_fee",
+    "query_intent": "Filing fee amount",
+    "expected_answer": "$110 (MFJ)",
+    "document": "knowledge_base/fee_cover_page_2026.md",
+    "document_exists": true,
+    "exact_answer_exists": true,
+    "status": "SHOULD_ANSWER",
+    "findings": "All required phrases found",
+    "recommendation": "\u2705 System MUST return answer with exact information"
+  },
+  {
+    "query": "What is the IRA deduction limit?",
+    "category": "ira_deduction",
+    "query_intent": "General IRA deduction limits",
+    "expected_answer": "Depends on filing status and income (see tables)",
+    "document": "knowledge_base/ira_limits_2025.md",
+    "document_exists": true,
+    "exact_answer_exists": true,
+    "status": "SHOULD_ANSWER",
+    "findings": "All required phrases found",
+    "recommendation": "\u2705 System MUST return answer with exact information"
+  },
+  {
+    "query": "What's the maximum I can contribute to my 401k for retirement?",
+    "category": "401k_contribution_limits",
+    "query_intent": "401(k) contribution limit",
+    "expected_answer": "~$24,500 per year (2025)",
+    "document": "knowledge_base/401k_limits_2025.md",
+    "document_exists": true,
+    "exact_answer_exists": true,
+    "status": "SHOULD_ANSWER",
+    "findings": "All required phrases found",
+    "recommendation": "\u2705 System MUST return answer with exact information"
+  }
+]

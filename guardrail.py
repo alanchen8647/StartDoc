@@ -28,34 +28,109 @@ COMMON_NAMES = {
 
 def detect_ssn(text: str) -> bool:
     """
-    Detect Social Security Number pattern: XXX-XX-XXXX
+    Detect Social Security Number in any format.
+
+    Catches:
+    - Formatted: "123-45-6789", "123 45 6789"
+    - Unformatted: "123456789" (9 consecutive digits)
+    - With context: "SSN is 123456789", "My SSN: 123-45-6789"
 
     Examples that match:
     - "123-45-6789"
-    - "Client 999-99-9999 has..."
+    - "123456789"
+    - "SSN 999999999"
 
-    Why this pattern?
-    SSN format is strictly 3-2-4 digits with hyphens.
-    This is unambiguous - no legitimate accounting term matches this.
+    Why catch both formats?
+    In practice, users might paste SSNs with or without formatting.
+    9-digit sequences are almost always SSNs in this context.
     """
-    # Pattern: word boundary + 3 digits + dash + 2 digits + dash + 4 digits + word boundary
-    ssn_pattern = r'\b\d{3}-\d{2}-\d{4}\b'
-    return bool(re.search(ssn_pattern, text))
+    # Pattern 1: Formatted SSN with separators (XXX-XX-XXXX or XXX XX XXXX)
+    ssn_formatted = r'\b\d{3}[\s\-]\d{2}[\s\-]\d{4}\b'
+    if re.search(ssn_formatted, text):
+        return True
+
+    # Pattern 2: Unformatted SSN (9 consecutive digits = XXX XX XXXX without separators)
+    ssn_unformatted = r'\b\d{9}\b'
+    if re.search(ssn_unformatted, text):
+        return True
+
+    return False
 
 
 def detect_ein(text: str) -> bool:
     """
-    Detect Employer Identification Number: XX-XXXXXXX
+    Detect Employer Identification Number in any format.
+
+    Catches:
+    - Formatted: "12-3456789", "12 3456789"
+    - Unformatted: "123456789" (9 consecutive digits)
 
     Examples that match:
     - "12-3456789"
-    - "EIN is 45-6789123"
+    - "123456789"
+    - "EIN is 999999999"
 
-    Why this pattern?
-    EIN is strictly 2-7 digits. More rare in docs, but should be blocked.
+    Why catch both formats?
+    EINs also appear with or without formatting.
+    9-digit sequences in business context likely EIN or SSN.
     """
-    ein_pattern = r'\b\d{2}-\d{7}\b'
-    return bool(re.search(ein_pattern, text))
+    # Pattern 1: Formatted EIN with separators (XX-XXXXXXX or XX XXXXXXX)
+    ein_formatted = r'\b\d{2}[\s\-]\d{7}\b'
+    if re.search(ein_formatted, text):
+        return True
+
+    # Pattern 2: Unformatted (9 consecutive digits)
+    ein_unformatted = r'\b\d{9}\b'
+    if re.search(ein_unformatted, text):
+        return True
+
+    return False
+
+
+def detect_suspicious_numbers(text: str) -> bool:
+    """
+    Detect suspicious number combinations that might be sensitive data.
+
+    Catches:
+    - Long continuous digit sequences (8+ digits): could be account/phone/passport
+    - Credit card patterns: 4111-1111-1111-1111 or variations
+    - Phone numbers with dashes: 555-123-4567
+    - Consecutive numbers separated by spaces: "1234 5678 9012"
+    - Other formatted number sequences
+
+    Examples that match:
+    - "Account 123456789" (8+ digits)
+    - "Credit card 4111-1111-1111-1111"
+    - "My number is 555-123-4567"
+    - "Client ID 87654321"
+
+    False positives to avoid:
+    - "2025" (year)
+    - "31,500" (currency amounts - context-dependent)
+    - Single numbers: "5", "10", "50"
+    """
+
+    # Pattern 1: 8+ consecutive digits (account numbers, long IDs, etc.)
+    # Examples: "123456789", "87654321000"
+    # In practice, users won't type long unformatted sequences for legitimate reasons
+    long_digits = r'\b\d{8,}\b'
+    if re.search(long_digits, text):
+        return True
+
+    # Pattern 2: Credit card-like patterns (16 digits with separators)
+    # Examples: "4111-1111-1111-1111", "4111 1111 1111 1111"
+    credit_card = r'\b\d{4}[\s\-]\d{4}[\s\-]\d{4}[\s\-]\d{4}\b'
+    if re.search(credit_card, text):
+        return True
+
+    # Pattern 3: Phone number patterns (formatted with separators)
+    # Examples: "555-123-4567", "555 123 4567", "(555) 123-4567"
+    # Must have separators to avoid false positives
+    phone = r'\b\d{3}[\s\-.\(\)]\d{3}[\s\-.\(\)]\d{4}\b'
+    if re.search(phone, text):
+        return True
+
+    return False
 
 
 def detect_real_name(text: str) -> Tuple[bool, str]:
@@ -123,15 +198,20 @@ def check_input_safety(question: str) -> Tuple[bool, str]:
     Returns:
         (is_safe, reason_if_blocked)
     """
-    # Check 1: SSN
+    # Check 1: SSN (specific format: XXX-XX-XXXX)
     if detect_ssn(question):
         return False, "SSN detected"
 
-    # Check 2: EIN
+    # Check 2: EIN (specific format: XX-XXXXXXX)
     if detect_ein(question):
         return False, "EIN detected"
 
-    # Check 3: Real name
+    # Check 3: Suspicious number combinations (generic catch-all)
+    # Catches: long sequences, credit cards, phone numbers, account IDs
+    if detect_suspicious_numbers(question):
+        return False, "Suspicious number sequence detected"
+
+    # Check 4: Real name
     has_name, name_found = detect_real_name(question)
     if has_name:
         return False, f"Real name detected ({name_found})"
@@ -152,6 +232,10 @@ def get_safe_response(reason: str) -> str:
         "EIN detected": (
             "⚠️ Please do not share client EINs. "
             "Refer to clients by type instead (e.g., 'A business client with...')"
+        ),
+        "Suspicious number sequence detected": (
+            "⚠️ Please do not share sensitive numbers (account IDs, phone numbers, credit cards, etc.). "
+            "Describe what you need help with without including specific client identifiers."
         ),
         "Real name detected": (
             "⚠️ Real names detected. "

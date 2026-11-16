@@ -1,0 +1,27 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.12.1, pytest-9.2.0, pluggy-1.7.0 -- D:\CodePath\Final Project\ai110-module4tinker-docubot-starter\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: D:\CodePath\Final Project\ai110-module4tinker-docubot-starter
+plugins: anyio-4.16.0
+collecting ... collected 18 items
+
+test_hierarchical_retrieval_comprehensive.py::TestStandardDeductionCategory::test_standard_deduction_married_filing_joint_original PASSED [  5%]
+test_hierarchical_retrieval_comprehensive.py::TestStandardDeductionCategory::test_standard_deduction_married_with_dependents PASSED [ 11%]
+test_hierarchical_retrieval_comprehensive.py::TestStandardDeductionCategory::test_standard_deduction_single_filer PASSED [ 16%]
+test_hierarchical_retrieval_comprehensive.py::TestStandardDeductionCategory::test_standard_deduction_head_of_household PASSED [ 22%]
+test_hierarchical_retrieval_comprehensive.py::TestStandardDeductionCategory::test_standard_deduction_age_65_bonus PASSED [ 27%]
+test_hierarchical_retrieval_comprehensive.py::TestIRALimitsCategory::test_ira_contribution_limits_basic PASSED [ 33%]
+test_hierarchical_retrieval_comprehensive.py::TestIRALimitsCategory::test_ira_married_covered_by_plan PASSED [ 38%]
+test_hierarchical_retrieval_comprehensive.py::TestIRALimitsCategory::test_ira_retirement_contribution_limit PASSED [ 44%]
+test_hierarchical_retrieval_comprehensive.py::TestIRALimitsCategory::test_ira_single_no_coverage PASSED [ 50%]
+test_hierarchical_retrieval_comprehensive.py::TestFeesCategory::test_fees_married_filing_jointly PASSED [ 55%]
+test_hierarchical_retrieval_comprehensive.py::TestFeesCategory::test_fees_single_filer PASSED [ 61%]
+test_hierarchical_retrieval_comprehensive.py::TestFeesCategory::test_fees_with_dependents PASSED [ 66%]
+test_hierarchical_retrieval_comprehensive.py::TestNaturalLanguageVariations::test_standard_deduction_variations PASSED [ 72%]
+test_hierarchical_retrieval_comprehensive.py::TestNaturalLanguageVariations::test_ira_limits_variations PASSED [ 77%]
+test_hierarchical_retrieval_comprehensive.py::TestEdgeCases::test_ambiguous_deduction_query PASSED [ 83%]
+test_hierarchical_retrieval_comprehensive.py::TestEdgeCases::test_multiple_concepts_standard_deduction_priority PASSED [ 88%]
+test_hierarchical_retrieval_comprehensive.py::TestEdgeCases::test_typo_resilience PASSED [ 94%]
+test_hierarchical_retrieval_comprehensive.py::TestEdgeCases::test_empty_query PASSED [100%]
+
+============================= 18 passed in 0.56s ==============================

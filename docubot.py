@@ -488,6 +488,9 @@ class DocuBot:
         """
         Hierarchical retrieval: identify if query matches a known category.
         Returns (category_name, target_file) or (None, None)
+
+        NOTE: This method returns ONLY the FIRST match for backwards compatibility.
+        Use _identify_all_categories() to get all matches for multi-topic queries.
         """
         query_lower = query.lower()
 
@@ -505,6 +508,10 @@ class DocuBot:
                 "keywords": ["fee", "fees", "filing fee", "service fee"],
                 "file": "fee_cover_page_2026.md",
             },
+            "401k": {
+                "keywords": ["401k", "401(k)", "401 k"],
+                "file": "401k_limits_2025.md",
+            },
         }
 
         # Check for category match (longer keywords first)
@@ -515,13 +522,54 @@ class DocuBot:
 
         return None, None
 
+    def _identify_all_categories(self, query: str):
+        """
+        Multi-category retrieval: identify ALL categories that match the query.
+        Returns list of (category_name, target_file) tuples.
+
+        For queries like "standard deduction and IRA limits", returns BOTH:
+        [("standard_deduction", "irs_standard_deduction_2025.md"),
+         ("ira", "ira_limits_2025.md")]
+        """
+        query_lower = query.lower()
+
+        # Define category keywords and their target documents
+        categories = {
+            "standard_deduction": {
+                "keywords": ["standard deduction", "standard deduction for"],
+                "file": "irs_standard_deduction_2025.md",
+            },
+            "ira": {
+                "keywords": ["ira", "ira contribution", "ira limit", "ira deduction"],
+                "file": "ira_limits_2025.md",
+            },
+            "fees": {
+                "keywords": ["fee", "fees", "filing fee", "service fee"],
+                "file": "fee_cover_page_2026.md",
+            },
+            "401k": {
+                "keywords": ["401k", "401(k)", "401 k"],
+                "file": "401k_limits_2025.md",
+            },
+        }
+
+        matched = []
+        for category, info in categories.items():
+            for keyword in sorted(info["keywords"], key=len, reverse=True):
+                if keyword in query_lower:
+                    matched.append((category, info["file"]))
+                    break  # Only add this category once
+
+        return matched
+
     def retrieve(self, query, top_k=3):
         """
-        Hierarchical Retrieval: Two-level search strategy
+        Hierarchical Retrieval: Two-level search strategy with multi-document support
 
-        Level 1: Check if query matches a known category (e.g., "standard deduction")
-        Level 2: If category matched, load that document directly
-        Otherwise: Use standard TF-IDF retrieval
+        Level 1: Check if query matches known categories (supports multiple topics)
+                 For "standard deduction and IRA limits", loads BOTH documents
+        Level 2: If category matched, load those documents directly
+        Level 3: Otherwise: Use standard TF-IDF retrieval
 
         Returns list of (filename, text, metadata) tuples sorted by relevance.
         Refuses (returns []) if no match is strong enough.
@@ -529,23 +577,29 @@ class DocuBot:
         # Normalize query to improve retrieval (remove noise words, standardize phrasing)
         query = normalize_query(query)
 
-        # LEVEL 1: Try category-first retrieval for known categories
-        category, target_file = self._identify_category(query)
+        # LEVEL 1: Try multi-category retrieval for known categories
+        matched_categories = self._identify_all_categories(query)
 
-        if category and target_file:
-            # Try to load the target document directly
-            target_path = os.path.join(self.docs_folder, target_file)
-            if os.path.exists(target_path):
-                try:
-                    with open(target_path, 'r', encoding='utf-8') as f:
-                        full_text = f.read()
+        if matched_categories:
+            # Try to load all matched documents
+            results = []
+            for category, target_file in matched_categories:
+                target_path = os.path.join(self.docs_folder, target_file)
+                if os.path.exists(target_path):
+                    try:
+                        with open(target_path, 'r', encoding='utf-8') as f:
+                            full_text = f.read()
 
-                    # Return the document directly
-                    meta = {"year": 2025 if "2025" in target_file else 2026, "type": category}
-                    return [(target_file, full_text, meta)]
-                except Exception:
-                    # Fall back to standard retrieval if file read fails
-                    pass
+                        # Add the document to results
+                        meta = {"year": 2025 if "2025" in target_file else 2026, "type": category}
+                        results.append((target_file, full_text, meta))
+                    except Exception:
+                        # Skip this document if read fails, continue with others
+                        pass
+
+            # If we successfully loaded at least one document, return them
+            if results:
+                return results
 
         # LEVEL 2: Standard retrieval (fallback)
         # Process query: lowercase, strip punctuation, stem

@@ -1,0 +1,42 @@
+[
+  {
+    "passed": true,
+    "query": "What are the IRA contribution limits for 2025?",
+    "category": "ira_contribution_limits",
+    "severity": "HIGH",
+    "note": "MUST include specific dollar amounts ($7,000 and $8,000)",
+    "issues": [],
+    "answer_preview": "[ira_limits_2025.md (2025)]\n# IRA contribution and deduction limits 2025\nSource: \"IRA income limits 2025.docx\" (three table images, transcribed to text). Tax year 2025.\n\n## 2025 IRA Contribution Limit...",
+    "full_answer_length": 3428
+  },
+  {
+    "passed": true,
+    "query": "What is the standard deduction for Married filing joint?",
+    "category": "standard_deduction",
+    "severity": "HIGH",
+    "note": "MUST include MFJ amount ($31,500)",
+    "issues": [],
+    "answer_preview": "[irs_standard_deduction_2025.md (2025)]\n# Standard deduction amounts, tax year 2025 (official IRS source)\nSource: IRS VITA/TCE training content, \"Standard deduction amounts (2025)\" - https://apps.irs....",
+    "full_answer_length": 1117
+  },
+  {
+    "passed": true,
+    "query": "What is the IRA deduction limit?",
+    "category": "ira_deduction",
+    "severity": "MEDIUM",
+    "note": "Acceptable if returns deduction tables",
+    "issues": [],
+    "answer_preview": "[ira_limits_2025.md (2025)]\n# IRA contribution and deduction limits 2025\nSource: \"IRA income limits 2025.docx\" (three table images, transcribed to text). Tax year 2025.\n\n## 2025 IRA Contribution Limit...",
+    "full_answer_length": 3428
+  },
+  {
+    "passed": true,
+    "query": "What's the fee for filing taxes?",
+    "category": "filing_fee",
+    "severity": "HIGH",
+    "note": "MUST include fee amount",
+    "issues": [],
+    "answer_preview": "[fee_cover_page_2026.md (2026)]\n# W.C. Tax and Consulting Service Inc. - 2026 Cover Page (service fee sheet)\nSource: \"2026 cover page 2.pdf\" (2 pages, a checkbox form, transcribed to text). Applies to...",
+    "full_answer_length": 4478
+  }
+]

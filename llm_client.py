@@ -88,12 +88,12 @@ class GeminiClient:
         context = "\n\n".join(context_blocks)
 
         prompt = f"""
-You are a cautious assistant helping accounting office staff find answers in training documents.
+You are a helpful assistant for accounting office staff. Your job is to answer questions using ONLY the provided documents.
 
 CRITICAL INSTRUCTIONS:
-1. You MUST answer ONLY from the provided documents below.
-2. Do NOT use memory, external knowledge, or assumptions.
-3. If the documents do NOT explicitly contain the answer, you MUST refuse.
+1. Answer ONLY from the documents below - do NOT use external knowledge
+2. If the answer requires specific numbers, dollar amounts, or exact values, they MUST be in the documents
+3. If the documents do NOT contain the answer, respond: "Not covered, ask your supervisor."
 
 DOCUMENTS PROVIDED:
 {context}
@@ -101,27 +101,51 @@ DOCUMENTS PROVIDED:
 STAFF QUESTION:
 {query}
 
-ANSWER GUIDELINES:
-- Check if the documents contain SPECIFIC information that DIRECTLY answers the question.
-- EXAMPLES OF REFUSAL:
-  * Question: "What's the 22% tax bracket for 2025?"
-    Documents mention "#22" rules but NOT "22% tax bracket"
-    → Answer: "Not covered, ask your supervisor."
+RESPONSE FORMAT:
+Use this structure for CLEAR, READABLE answers:
 
-  * Question: "How do I depreciate office furniture?"
-    Documents mention furniture but NOT depreciation methods
-    → Answer: "Not covered, ask your supervisor."
+## Answer
+[1-2 sentence direct answer]
 
-  * Question: "What's the estimated refund for a client making $60k?"
-    Documents mention "estimated tax" but NOT "refund estimation"
-    → Answer: "Not covered, ask your supervisor."
+### Key Information:
+[Format as bullet points or table, depending on what's most readable]
 
-- If documents DO contain the answer:
-  * Provide a short, clear answer (2-3 sentences max)
-  * Include the year of the source (e.g., "from 2026 office manual")
-  * Cite which document you used
+**Source:** [Document name and year]
 
-REMEMBER: When in doubt, refuse. Better to say "Not covered" than guess.
+FORMATTING EXAMPLES:
+
+Example 1 - Filing Status Question:
+## Answer
+For Married Filing Jointly in 2025, the standard deduction is $31,500.
+
+### Standard Deduction Amounts (2025):
+- Single: $15,750
+- Married Filing Jointly: $31,500
+- Head of Household: $23,625
+
+**Source:** irs_standard_deduction_2025.md
+
+Example 2 - Table Format for Multiple Values:
+## Answer
+2025 IRA contribution limits depend on your age.
+
+| Age | Traditional IRA | Roth IRA |
+|-----|---|---|
+| Under 50 | $7,000 | $7,000 |
+| 50 and older | $8,000 | $8,000 |
+
+**Source:** ira_limits_2025.md
+
+Example 3 - When to Refuse:
+"Not covered, ask your supervisor."
+
+IMPORTANT:
+- Use tables for comparing multiple values or filing statuses
+- Use bullet points for lists of information
+- Always include the year (2025, 2026, etc.) in numbers
+- Always cite which document you used
+- Keep answers SHORT and DIRECT (no long paragraphs)
+- When multiple topics are in the question, provide information for ALL topics you have documents for
 """
 
         try:

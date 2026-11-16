@@ -1,5 +1,14 @@
-# IRA income limits 2025
+# IRA contribution and deduction limits 2025
 Source: "IRA income limits 2025.docx" (three table images, transcribed to text). Tax year 2025.
+
+## 2025 IRA Contribution Limits Summary
+For 2025, the annual contribution limit to a Traditional IRA or Roth IRA is:
+- **$7,000** for individuals under age 50
+- **$8,000** for individuals age 50 and older (includes $1,000 catch-up contribution)
+
+These contribution limits apply to ALL individuals regardless of income level. However, whether you can DEDUCT your Traditional IRA contributions depends on your filing status, income, and whether you have a retirement plan at work (see deduction limits below).
+
+For Roth IRA specifically, there are income phase-out ranges that determine eligibility to contribute (see income requirements below).
 
 ## 2025 IRA deduction limits: you are NOT covered by a retirement plan at work
 | Filing status | Modified adjusted gross income (MAGI) | Deduction limit |
