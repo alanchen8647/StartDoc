@@ -61,11 +61,33 @@ The current knowledge base uses 2025 IRS tax rules and demonstration documents. 
 
 ## Project Demo (example of question and response)
 
-![demo image 1](demoScreenshot/demo1.png)
-![demo image 1](demoScreenshot/demo2.png)
-![demo image 1](demoScreenshot/demo3.png)
-![demo image 1](demoScreenshot/demo4.png)
-![demo image 1](demoScreenshot/demo5.png)
+```
+Input: How much does it cost to file taxes as a single person? RAG (with LLM)
+
+Output:
+## Answer To file taxes as a Single person, the base fee starts at $100.
+Key Information:
+Filing Status: Single
+Base Fee: Starts at $100
+Additional Fees: No dependent fee and no EITC fee is charged for Single filers.
+General Quote Range: Typically $100 - $200 (depending on household composition and number of tax forms).
+Source: script_personal_return_2026.md and fee_cover_page_2026.md
+```
+
+```
+Input: What's the limit for IRA contribution and 401k contribution?
+
+Output:
+## Answer For 2025, the annual contribution limits are $7,000 for IRAs (increasing to $8,000 for individuals age 50 and older) and $24,500 for 401(k) plans (increasing to $29,500 for individuals age 50 and older).
+Key Information:
+* IRA contribution limits (2025):
+** Under age 50: $7,000
+** Age 50 and older: $8,000 (includes $1,000 catch-up contribution)
+* 401(k) contribution limits (2025):
+** Under age 50: $24,500
+** Age 50 and older: $29,500 (includes $7,500 catch-up contribution)
+Source: ira_limits_2025.md and 401k_limits_2025.md (2025)
+``` 
 
 
 ## Design Decisions
